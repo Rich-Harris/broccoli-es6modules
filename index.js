@@ -1,5 +1,6 @@
 var CachingWriter = require('broccoli-caching-writer');
 var ES6Transpiler = require('es6-module-transpiler').Compiler;
+var esperanto = require('esperanto');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
@@ -46,10 +47,13 @@ module.exports = CachingWriter.extend({
       return this.newTranspilerCache[key] = entry;
     }
     try {
-      var compiler = new ES6Transpiler(source, moduleName);
-      patchRelativeImports(moduleName, compiler);
+      // TODO reinstate this functionality
+      // patchRelativeImports(moduleName, compiler);
       return this.newTranspilerCache[key] = {
-        amd: compiler.toAMD()
+        amd: esperanto.toAmd(source, {
+          amdName: moduleName,
+          strict: true
+        }).code
       };
     } catch(err) {
       err.file = moduleName;
